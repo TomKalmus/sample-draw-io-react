@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
 import CreateTaskNode from "./component/CreateTaskNode";
+import { exportToJsonNodeNames } from "./common/Common.js";
 import "./common.css";
 import "./mxgraph.css";
 import {
@@ -593,6 +594,52 @@ class mxGraphGridAreaEditor extends Component {
     toolbar.appendChild(
       mxUtils.button("render JSON", function() {
         that.renderJSON(JSON.parse(that.state.json), graph);
+      })
+    );
+
+    // My changes for grouping
+
+    toolbar.appendChild(
+      mxUtils.button("Group", function(evt) {
+        var cells = graph.getSelectionCells()
+
+        var newGroup = graph.createGroupCell(cells)
+        newGroup.setStyle('whiteSpace=wrap;html=1;aspect=fixed;fillColor=#d5e8d4;strokeColor=#82b366;rounded=1;');
+        console.log(newGroup)
+
+        let updatedGraph = graph
+        updatedGraph.getModel().beginUpdate();
+        try {
+          graph.groupCells(newGroup, null, cells)
+
+        } finally {
+          // Updates the display
+          updatedGraph.getModel().endUpdate();
+        }
+      })
+    );
+
+    toolbar.appendChild(
+      mxUtils.button("Ungroup", function(evt) {
+        var cells = graph.getSelectionCells()
+
+        let updatedGraph = graph
+        updatedGraph.getModel().beginUpdate();
+        try {
+          graph.ungroupCells(cells)
+
+        } finally {
+          // Updates the display
+          updatedGraph.getModel().endUpdate();
+        }
+      })
+    );
+
+    toolbar.appendChild(
+      mxUtils.button("Generate items", function(evt) {
+          var json = that.getJsonModel(graph);
+          // let jsonStr = that.stringifyWithoutCircular(json);
+          exportToJsonNodeNames(json);
       })
     );
   };

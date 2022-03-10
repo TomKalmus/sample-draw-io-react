@@ -206,6 +206,8 @@ class mxGraphGridAreaEditor extends Component {
     this.applyHandler(graph, cell, "desc", fields.taskDesc);
     cell.setId(fields.id || 100);
     this.setState({ createVisile: false });
+    var json = this.getJsonModel(graph);
+    this.props.parentCallback(json);
   };
   applyHandler = (graph, cell, name, newValue) => {
     graph.getModel().beginUpdate();
@@ -638,8 +640,7 @@ class mxGraphGridAreaEditor extends Component {
     toolbar.appendChild(
       mxUtils.button("Generate items", function(evt) {
           var json = that.getJsonModel(graph);
-          // let jsonStr = that.stringifyWithoutCircular(json);
-          exportToJsonNodeNames(json);
+          that.props.parentCallback(json);
       })
     );
   };
@@ -701,6 +702,7 @@ class mxGraphGridAreaEditor extends Component {
   render() {
     return (
       <div>
+        <p>{this.props.test}</p>
         <ul className="sidebar" ref="mxSidebar">
           <li className="title" data-title="Task node" data-value="Task node">
             Task node
@@ -714,23 +716,23 @@ class mxGraphGridAreaEditor extends Component {
           </li>
           <li
             className="task"
-            data-title="A/B test task"
-            data-value="A/B test task"
+            data-title="SSH"
+            data-value="SSH"
           >
-            A/Btest task
+            SSH server
           </li>
           <li
             className="task"
-            data-title="Hive->Email"
-            data-value="Report task"
+            data-title="Server"
+            data-value="Server"
           >
-            Report task
+            Server
           </li>
-          <li className="task" data-title="Hive->Hive" data-value="HSQL task">
-            HSQL task
+          <li className="task" data-title="Database" data-value="Database">
+            Database
           </li>
-          <li className="task" data-title="Shell task" data-value="Shell task">
-            Shell task
+          <li className="task" data-title="Proxy" data-value="Proxy">
+            Proxy
           </li>
           <li id="layout123">layout</li>
         </ul>

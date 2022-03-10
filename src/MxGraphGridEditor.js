@@ -285,6 +285,8 @@ class mxGraphGridAreaEditor extends Component {
     });
   };
   createPopupMenu = (graph, menu, cell, evt) => {
+    var that = this;
+
     if (cell) {
       if (cell.edge === true) {
         menu.addItem("Delete connection", null, function() {
@@ -298,7 +300,15 @@ class mxGraphGridAreaEditor extends Component {
         });
         menu.addItem("Delete child node", null, function() {
           graph.removeCells([cell]);
+          that.props.deleteNode(cell["mxObjectId"]);
+          for (let i in graph.cellEditor.graph.model.cells) {
+            if (graph.cellEditor.graph.model.cells[i]["mxObjectId"] === cell["mxObjectId"]) {
+              delete graph.cellEditor.graph.model.cells[i];
+              break;
+            }
+          }
           mxEvent.consume(evt);
+
         });
       }
     }
@@ -658,7 +668,7 @@ class mxGraphGridAreaEditor extends Component {
           dragElt: this.getEditPreview()
         },
         () => {
-          console.log(this);
+          // console.log(this);
           // layout
           const layout = new mxCompactTreeLayout(graph, false);
           this.setState({ layout });
@@ -702,7 +712,6 @@ class mxGraphGridAreaEditor extends Component {
   render() {
     return (
       <div>
-        <p>{this.props.test}</p>
         <ul className="sidebar" ref="mxSidebar">
           <li className="title" data-title="Task node" data-value="Task node">
             Task node
